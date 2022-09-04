@@ -1,3 +1,9 @@
+class Imagen {
+    constructor(nombre, tamanio) {
+        this.nombre = nombre;
+        this.tamanio = tamanio;
+    }
+}
 const textoBienvenida = "Bienvenido a tu galería de imágenes virtual."
 const textoInstrucciones = `
     Escribe 1 para agregar imagenes.
@@ -7,37 +13,36 @@ const textoInstrucciones = `
     Escribe cualquier otra cosa para salir.`
 const espacioTotal = 10 // el usuario puede subir en total hasta 10mb a la plataforma.
 let espacioUtilizado = 0
-let cantidadImagenes = 0
-let imagenes = ""
+let imagenes = []
 
 
-Main()
+main()
 
-function Main() {
+function main() {
     alert(textoBienvenida)
-    while (true) {
-        let respuesta = parseInt(prompt(textoInstrucciones))
+    let opciones = [1, 2, 3, 4];
+    let respuesta;
+    do {
+        respuesta = parseInt(prompt(textoInstrucciones))
         switch (respuesta) {
             case 1:
-                AgregarImagen()
-                break
+                agregarImagen();
+                break;
             case 2:
-                MostrarCantidadImagenes()
-                break
+                mostrarCantidadImagenes();
+                break;
             case 3:
-                MostrarNombresImagenes()
-                break
+                mostrarNombresImagenes();
+                break;
             case 4:
-                VerEspacio()
-                break
-            default:
-                alert("¡Hasta la próxima!")
-                return
+                verEspacio();
+                break;
         }
-    }
+    } while (opciones.includes(respuesta));
+    alert("¡Hasta la próxima!");
 }
 
-function AgregarImagen() {
+function agregarImagen() {
     if (espacioUtilizado >= espacioTotal) {
         alert("No tienes espacio de almacenamiento disponible")
         return
@@ -45,33 +50,45 @@ function AgregarImagen() {
     let repeticiones = parseInt(prompt("¿Cuántas imágenes quieres agregar?"))
     for (i = 0; i < repeticiones; i++) {
         let nombre = prompt(`Ingresa el nombre de la imagen ${i + 1}:`)
-        let tamanio = parseInt(prompt(`Ingresa el tamaño de la imagen ${i + 1}:`))
-        if (HayEspacioEnDisco(tamanio)) {
-            GrabarImagen(nombre, tamanio)
+        let tamanio;
+        while (true) {
+            tamanio = parseInt(prompt(`Ingresa el tamaño de la imagen ${i + 1}:`))
+            if (isNaN(tamanio)) {
+                alert("Ingresaste un valor inválido. Asegurate de solo ingresar números.")
+            } else {
+                break;
+            }
+        }
+        if (hayEspacioEnDisco(tamanio)) {
+            grabarImagen(nombre, tamanio);
         } else {
-            alert("Esta imagen excede el espacio máximo de la plataforma. Se ignorará.")
-            continue
+            alert("Esta imagen excede el espacio máximo de la plataforma. Se ignorará.");
+            continue;
         }
     }
 }
-function GrabarImagen(nombre, tamanio) {
-    imagenes += nombre + " "
-    cantidadImagenes++
-    espacioUtilizado += tamanio
+function grabarImagen(nombre, tamanio) {
+    const imagen = new Imagen(nombre, tamanio);
+    espacioUtilizado += imagen.tamanio;
+    imagenes.push(imagen);
 }
-function HayEspacioEnDisco(tamanio) {
-    return espacioUtilizado + tamanio <= espacioTotal
+function hayEspacioEnDisco(tamanio) {
+    return espacioUtilizado + tamanio <= espacioTotal;
 }
-function MostrarCantidadImagenes() {
-    alert(`Has ingresado ${cantidadImagenes} imágenes`)
+function mostrarCantidadImagenes() {
+    alert(`Has ingresado ${imagenes.length} imágenes`);
 }
-function MostrarNombresImagenes() {
-    if (cantidadImagenes > 0) {
-        alert(`Las imágenes que has ingresado son: ${imagenes}`)
+function mostrarNombresImagenes() {
+    let nombreImagenes = [];
+    if (imagenes.length > 0) {
+        for (const imagen of imagenes) {
+            nombreImagenes.push(imagen.nombre);
+        }
+        alert(`Las imágenes que has ingresado son:\n${nombreImagenes.join("\n")}`);
     } else {
-        alert("No has ingresado ninguna imágen aún.")
+        alert("No has ingresado ninguna imagen aún.");
     }
 }
-function VerEspacio() {
-    alert(`Has utilizado ${espacioUtilizado} MB de los ${espacioTotal} MB disponibles.`)
+function verEspacio() {
+    alert(`Has utilizado ${espacioUtilizado} MB de los ${espacioTotal} MB disponibles.`);
 }
