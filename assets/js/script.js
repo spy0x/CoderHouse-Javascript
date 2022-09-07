@@ -12,8 +12,7 @@ const textoInstrucciones = `
     Escribe 4 para consultar el espacio utilizado y disponible de esta sesión.
     Escribe 5 para eliminar una imagen añadida en esta sesión.
     Escribe cualquier otra cosa para salir.`
-const espacioTotal = 100 // el usuario puede subir en total hasta 100mb a la plataforma.
-let espacioUtilizado = 0
+const espacioMaximo = 100 // el usuario puede subir maximo hasta 100mb a la plataforma.
 let imagenes = []
 
 // Inicia el programa
@@ -36,7 +35,7 @@ function main() {
                 mostrarNombresImagenes();
                 break;
             case 4:
-                verEspacio();
+                espacioUsado(true);
                 break;
             case 5:
                 eliminarImagen();
@@ -45,57 +44,71 @@ function main() {
     } while (opciones.includes(respuesta));
     alert("¡Hasta la próxima!");
 }
-
+//AGREGAR IMAGEN
 function agregarImagen() {
-    if (espacioUtilizado >= espacioTotal) {
+    if (espacioUsado() >= espacioMaximo) {
         alert("No tienes espacio de almacenamiento disponible")
         return
     }
-    let repeticiones = parseInt(prompt("¿Cuántas imágenes quieres agregar?"))
+    let repeticiones;
+    while (true) {
+        repeticiones = parseInt(prompt("¿Cuántas imágenes quieres agregar?"))
+        if (!notANumber(repeticiones)) {
+            break;
+        }
+    }
     for (i = 0; i < repeticiones; i++) {
-        let nombre = prompt(`Ingresa el nombre de la imagen ${i + 1}:`).toLowerCase();
+        let nombre;
+        do {
+            nombre = prompt(`Ingresa el nombre de la imagen ${i + 1}:`).toLowerCase();
+        } while (existeNombre(nombre))
         let tamanio;
         while (true) {
             tamanio = parseInt(prompt(`Ingresa el tamaño de la imagen ${i + 1}:`))
-            if (isNaN(tamanio)) {
-                alert("Ingresaste un valor inválido. Asegurate de solo ingresar números.")
-            } else {
+            if (!notANumber(tamanio)) {
                 break;
             }
         }
-        if (hayEspacioEnDisco(tamanio)) {
-            grabarImagen(nombre, tamanio);
+        if (espacioUsado() + tamanio <= espacioMaximo) {
+            crearImagen(nombre, tamanio);
         } else {
             alert("Esta imagen excede el espacio máximo de la plataforma. Se ignorará.");
             continue;
         }
     }
 }
-function grabarImagen(nombre, tamanio) {
+function crearImagen(nombre, tamanio) {
     const imagen = new Imagen(nombre, tamanio);
-    espacioUtilizado += imagen.tamanio;
     imagenes.push(imagen);
 }
-function hayEspacioEnDisco(tamanio) {
-    return espacioUtilizado + tamanio <= espacioTotal;
-}
+
+// MOSTRAR CANTIDAD DE IMAGENES
 function mostrarCantidadImagenes() {
     alert(`Has ingresado ${imagenes.length} imágenes`);
 }
+
+// MOSTRAR NOMBRES DE IMAGENES
 function mostrarNombresImagenes() {
     let nombreImagenes = [];
     if (imagenes.length > 0) {
-        for (const imagen of imagenes) {
-            nombreImagenes.push(imagen.nombre);
-        }
+        let nombreImagenes = imagenes.map(imagen => imagen.nombre); 
         alert(`Las imágenes que has ingresado son:\n${nombreImagenes.join("\n")}`);
     } else {
         alert("No has ingresado ninguna imagen aún.");
     }
 }
-function verEspacio() {
-    alert(`Has utilizado ${espacioUtilizado} MB de los ${espacioTotal} MB disponibles.`);
+
+// ESPACIO USADO
+function espacioUsado(showAlert = false) {
+    const tamanio = imagenes.reduce((acumulador, imagen) => acumulador + imagen.tamanio, 0);
+    if (showAlert) {
+        alert(`Has utilizado ${tamanio} MB de los ${espacioMaximo} MB disponibles.
+        ${100 - Math.round((tamanio / espacioMaximo * 100))}% restante disponible.`);
+    }
+    return tamanio;
 }
+
+// ELIMINAR IMAGEN
 function eliminarImagen() {
     let nombreImagen = undefined;
     do {
@@ -108,7 +121,23 @@ function eliminarImagen() {
             alert(`No existe ninguna imagen con el nombre ${respuesta}.`);
         }
     } while (nombreImagen == undefined)
-    let imageIndex = imagenes.indexOf(nombreImagen);
+    const imageIndex = imagenes.indexOf(nombreImagen);
     imagenes.splice(imageIndex, 1); //Elimina la imagen del array de imagenes agregadas.
     alert("La imagen se ha eliminado exitosamente.");
+}
+
+// FUNCIONES VERIFICADORAS
+function notANumber(numero) {
+    const result = isNaN(numero);
+    if (result) {
+        alert("Ingresaste un valor inválido. Asegurate de solo ingresar números.");
+    }
+    return result;
+}
+function existeNombre(nombre) {
+    const result = imagenes.some(imagen => imagen.nombre == nombre)
+    if (result) {
+        alert("Ya existe una imagen con este nombre. Ingresa otro.");
+    }
+    return result;
 }
