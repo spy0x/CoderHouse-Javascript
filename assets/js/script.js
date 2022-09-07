@@ -10,17 +10,18 @@ const textoInstrucciones = `
     Escribe 2 para saber cuantas imágenes has ingresado hasta el momento.
     Escribe 3 para consultar las imágenes que has ingresado en esta sesión.
     Escribe 4 para consultar el espacio utilizado y disponible de esta sesión.
+    Escribe 5 para eliminar una imagen añadida en esta sesión.
     Escribe cualquier otra cosa para salir.`
-const espacioTotal = 10 // el usuario puede subir en total hasta 10mb a la plataforma.
+const espacioTotal = 100 // el usuario puede subir en total hasta 100mb a la plataforma.
 let espacioUtilizado = 0
 let imagenes = []
 
-
+// Inicia el programa
 main()
 
 function main() {
     alert(textoBienvenida)
-    let opciones = [1, 2, 3, 4];
+    let opciones = [1, 2, 3, 4, 5];
     let respuesta;
     do {
         respuesta = parseInt(prompt(textoInstrucciones))
@@ -37,6 +38,9 @@ function main() {
             case 4:
                 verEspacio();
                 break;
+            case 5:
+                eliminarImagen();
+                break;
         }
     } while (opciones.includes(respuesta));
     alert("¡Hasta la próxima!");
@@ -49,7 +53,7 @@ function agregarImagen() {
     }
     let repeticiones = parseInt(prompt("¿Cuántas imágenes quieres agregar?"))
     for (i = 0; i < repeticiones; i++) {
-        let nombre = prompt(`Ingresa el nombre de la imagen ${i + 1}:`)
+        let nombre = prompt(`Ingresa el nombre de la imagen ${i + 1}:`).toLowerCase();
         let tamanio;
         while (true) {
             tamanio = parseInt(prompt(`Ingresa el tamaño de la imagen ${i + 1}:`))
@@ -91,4 +95,20 @@ function mostrarNombresImagenes() {
 }
 function verEspacio() {
     alert(`Has utilizado ${espacioUtilizado} MB de los ${espacioTotal} MB disponibles.`);
+}
+function eliminarImagen() {
+    let nombreImagen = undefined;
+    do {
+        const respuesta = prompt("Ingresa el nombre de la imagen a eliminar. Escribe 0 para cancelar").toLowerCase();
+        if (respuesta == 0) {
+            return;
+        }
+        nombreImagen = imagenes.find(imagen => imagen.nombre == respuesta);
+        if (nombreImagen == undefined && respuesta != 0) {
+            alert(`No existe ninguna imagen con el nombre ${respuesta}.`);
+        }
+    } while (nombreImagen == undefined)
+    let imageIndex = imagenes.indexOf(nombreImagen);
+    imagenes.splice(imageIndex, 1); //Elimina la imagen del array de imagenes agregadas.
+    alert("La imagen se ha eliminado exitosamente.");
 }
