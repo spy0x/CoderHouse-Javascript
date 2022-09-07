@@ -1,3 +1,4 @@
+// OBJETO IMAGEN
 class Imagen {
     constructor(nombre, tamanio) {
         this.nombre = nombre;
