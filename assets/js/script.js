@@ -15,12 +15,14 @@ const textoInstrucciones = `
     Escribe cualquier otra cosa para salir.`
 const espacioMaximo = 100 // el usuario puede subir maximo hasta 100mb a la plataforma.
 let imagenes = []
-
+//Objetos del DOM
+const subtitle = document.getElementById("subtitulo");
+const nImagenes = document.getElementById("n_imagenes");
 // Inicia el programa
 main()
 
 function main() {
-    alert(textoBienvenida)
+    alert(textoBienvenida);
     let opciones = [1, 2, 3, 4, 5];
     let respuesta;
     do {
@@ -44,6 +46,7 @@ function main() {
         }
     } while (opciones.includes(respuesta));
     alert("¡Hasta la próxima!");
+    mostrarResumen();
 }
 //AGREGAR IMAGEN
 function agregarImagen() {
@@ -92,7 +95,7 @@ function mostrarCantidadImagenes() {
 function mostrarNombresImagenes() {
     let nombreImagenes = [];
     if (imagenes.length > 0) {
-        let nombreImagenes = imagenes.map(imagen => imagen.nombre); 
+        let nombreImagenes = imagenes.map(imagen => imagen.nombre);
         alert(`Las imágenes que has ingresado son:\n${nombreImagenes.join("\n")}`);
     } else {
         alert("No has ingresado ninguna imagen aún.");
@@ -141,4 +144,30 @@ function existeNombre(nombre) {
         alert("Ya existe una imagen con este nombre. Ingresa otro.");
     }
     return result;
+}
+// DOM Funciones
+function mostrarResumen() {
+    const text = document.createElement("h2");
+    text.innerText = "Resumen de tus acciones";
+    subtitle.append(text);
+    if (imagenes.length > 0) {
+        nImagenes.innerHTML = `<h4>Cantidad de imágenes:</h4>
+            <p>${imagenes.length}</p>`;
+        const nombreImagenes = imagenes.map(imagen => imagen.nombre);
+        const tituloListaNombres = document.createElement("h4");
+        tituloListaNombres.innerText = "Nombres de Imágenes ingresadas:"
+        nImagenes.append(tituloListaNombres)
+        for (nombre of nombreImagenes) {
+            const nombreImagen = document.createElement("p");
+            nombreImagen.innerText = `${nombre}`;
+            nImagenes.append(nombreImagen);
+        }
+    } else {
+        nImagenes.innerText = `No ingresaste ninguna imagen`;
+    }
+    const tamanio = imagenes.reduce((acumulador, imagen) => acumulador + imagen.tamanio, 0);
+    const espacioUsado = document.createElement("h5");
+    espacioUsado.innerText = `Has utilizado ${tamanio} MB de los ${espacioMaximo} MB disponibles.
+    ${100 - Math.round((tamanio / espacioMaximo * 100))}% restante disponible.`
+    document.body.append(espacioUsado);
 }
