@@ -19,7 +19,39 @@ let imagenes = []
 const subtitle = document.getElementById("subtitulo");
 const nImagenes = document.getElementById("n_imagenes");
 // Inicia el programa
-main()
+// main()
+const cantidadInput = document.getElementById('cantidad');
+const inputFiles = document.getElementById('inputfiles');
+const form = document.getElementById('formulario');
+
+const maxFiles = 10; //El usuario puede ingresar maximo 10 imagenes
+let totalImages = 0;
+
+cantidadInput.oninput = () => {
+    cantidadInput.value = Math.max(0, Math.min(cantidadInput.value, maxFiles)); //Hace un clamp del valor ingresado min=0 y max=10
+    const veces = parseInt(cantidadInput.value);
+    inputFiles.innerHTML = ''; //Hace un clear a la cantidad de elementos previos
+    for (i = 0; i < veces; i++) {
+        const fileUpload = document.createElement('div');
+        fileUpload.innerHTML = `<label for="img">Selecciona una imagen:</label>
+        <input class="uploadinput" type="file" id="img" name="img" accept="image/*">`
+        inputFiles.append(fileUpload);
+    }
+}
+form.onsubmit = (e) => {
+    e.preventDefault();
+    const uploads = document.getElementsByClassName('uploadinput');
+    for (element of uploads) {
+        countImages(element.files);
+        console.log(element.files[0].name);
+    }
+}
+function countImages(list){
+    totalImages = 0; // Resetea el contador
+    if (list.length > 0) {
+        totalImages++;
+    }
+}
 
 function main() {
     alert(textoBienvenida);
