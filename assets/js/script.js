@@ -41,16 +41,8 @@ cantidadInput.oninput = () => {
 form.onsubmit = (e) => {
     e.preventDefault();
     const uploads = document.getElementsByClassName('uploadinput');
-    for (element of uploads) {
-        countImages(element.files);
-        console.log(element.files[0].name);
-    }
-}
-function countImages(list){
-    totalImages = 0; // Resetea el contador
-    if (list.length > 0) {
-        totalImages++;
-    }
+    const userUploads = Array.from(uploads).filter(element => element.files.length > 0)
+    mostrarResumen(userUploads);
 }
 
 function main() {
@@ -178,20 +170,22 @@ function existeNombre(nombre) {
     return result;
 }
 // DOM Funciones
-function mostrarResumen() {
+function mostrarResumen(userUploads) {
     const text = document.createElement("h2");
     text.innerText = "Resumen de tus acciones";
     subtitle.append(text);
-    if (imagenes.length > 0) {
+    if (userUploads.length > 0) {
         nImagenes.innerHTML = `<h4>Cantidad de imágenes:</h4>
-            <p>${imagenes.length}</p>`;
+            <p>${userUploads.length}</p>`;
         const nombreImagenes = imagenes.map(imagen => imagen.nombre);
         const tituloListaNombres = document.createElement("h4");
         tituloListaNombres.innerText = "Nombres de Imágenes ingresadas:"
         nImagenes.append(tituloListaNombres)
         for (nombre of nombreImagenes) {
+        }
+        for (element of userUploads) {
             const nombreImagen = document.createElement("p");
-            nombreImagen.innerText = `${nombre}`;
+            nombreImagen.innerText = `${element.files[0].name}`;
             nImagenes.append(nombreImagen);
         }
     } else {
