@@ -1,31 +1,62 @@
 /* Reset CSS */
 body * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    color: #000000;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	color: #000000;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 400;
 }
+
 nav {
 	background-color: #1f2e43;
+	background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
 	opacity: 0.90;
 }
+
 .nav__title {
 	font-weight: 900;
 	font-size: 2rem;
 	color: whitesmoke;
 }
-.header__leftbox {
-	background: linear-gradient(0deg, rgba(15,22,32,1) 0%, rgba(22,32,48,1) 50%, rgba(29,43,65,1) 100%);
+
+.nav__title:hover {
 	color: whitesmoke;
 }
+.nav__togglebutton {
+	color: whitesmoke;
+}
+
+.nav__li {
+	color: whitesmoke;
+	text-decoration: none;
+	margin-right: 1rem;
+	font-size: 1rem;
+}
+.nav__li:hover {
+	color: rgb(212, 212, 212);
+}
+
+.header__leftbox {
+	background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
+	color: whitesmoke;
+}
+
+.header__leftbox__title {
+	font-weight: 900;
+	font-size: 3rem;
+	color: whitesmoke;
+}
+
+.header__leftbox_button {}
+
 .header__rightbox {
 	background-image: url("../img/gallery.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: right;
 }
+
 
 
 /* html, body, div, span, applet, object, iframe,

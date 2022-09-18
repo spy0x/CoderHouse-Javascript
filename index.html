@@ -18,16 +18,36 @@
 </head>
 
 <body>
-    <nav class="container-fluid p-0 fixed-top">
-        <div class="p-4">
-            <h1 class="nav__title">ARTRepo Gallery</h1>
+    <nav class="navbar navbar-expand-lg p-0 fixed-top">
+        <div class="container-fluid p-4">
+            <a class="navbar-brand nav__title" href="./">ARTRepo Gallery</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon navbar-dark"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav__li" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav__li" href="#">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav__li" href="#">About</a>
+                    </li>
+                </ul>
+            </div>
         </div>
+
     </nav>
     <header class="container-fluid bg-warning">
         <div class="row">
             <div class="d-none d-lg-block col-5 vh-100 p-0 header__leftbox">
-                <div class="d-flex flex-column h-100 justify-content-center">
-                    <div class="bg-white">Hola</div>
+                <div class="d-flex flex-column h-100 justify-content-center align-items-center">
+                    <h2 class="text-center header__leftbox__title">Welcome!</h2>
+                    <h3 class="text-center text-white">Ready to upload some images?</h3>
+                    <a class="btn btn-primary" href="#" role="button">Upload</a>
                 </div>
             </div>
             <div class="col-12 col-lg-7 vh-100 bg-primary p-0 header__rightbox">
