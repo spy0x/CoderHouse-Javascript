@@ -18,9 +18,13 @@ nav {
 	font-weight: 900;
 	font-size: 2rem;
 	color: whitesmoke;
+	font-weight: 400;
 }
 
 .nav__title:hover {
+	color: whitesmoke;
+}
+.nav__title:focus {
 	color: whitesmoke;
 }
 .nav__togglebutton {
@@ -31,10 +35,12 @@ nav {
 	color: whitesmoke;
 	text-decoration: none;
 	margin-right: 1rem;
-	font-size: 1rem;
+	font-size: 1.2rem;
+	font-weight: 100;
 }
 .nav__li:hover {
-	color: rgb(212, 212, 212);
+	color: rgb(255, 215, 40);
+	font-weight: 400;
 }
 
 .header__leftbox {
@@ -48,14 +54,17 @@ nav {
 	color: whitesmoke;
 }
 
-.header__leftbox_button {}
-
 .header__rightbox {
 	background-image: url("../img/gallery.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: right;
 }
+.header__rightbox div {
+	background-color: black;
+	opacity: 0.5;
+}
+
 
 
 
