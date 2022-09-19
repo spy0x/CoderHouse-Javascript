@@ -80,6 +80,10 @@ nav {
 	width: 50%;
 	max-width: 200px;
 }
+#stats h2 {
+	font-weight: 900;
+	text-shadow: 3px 3px 3px rgba(0,0,0,0.35);
+}
 /* MEDIAQUERIES */
 @media screen and (max-height: 480px) {
 	.nav__title {
