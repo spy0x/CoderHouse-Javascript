@@ -60,19 +60,47 @@
     </header>
     <main class="container-fluid">
         <section id="upload" class="p-4">
-            <div class="overflow-hidden rounded main__section__container">
+            <div class="overflow-hidden rounded main__section__container d-flex flex-column justify-content-center align-items-center">
                 <h1 class="w-100 p-3 text-center">Upload your <span class="text-warning">ART!</span></h1>
-                <img src="./assets/img/Upload-Folder-icon.png" alt="upload icon decoration" class="m-3 d-block mx-auto">
-                <form id="formulario">
-                    <label for="cantidad">¿Cuántas imágenes quieres agregar? (máximo 10):</label>
-                    <input type="number" id="cantidad" name="cantidad" min="1" max="10">
+                <img src="./assets/img/Upload-Folder-icon.png" alt="upload icon decoration" class="m-3">
+                <form id="formulario" class="p-2 p-lg-3 text-center">
+                    <label for="cantidad">How many images do you want to upload? <small>(max 10)</small>:</label>
+                    <input type="number" id="cantidad" name="cantidad" min="1" max="10" class="my-2">
                     <div id="inputfiles"></div>
-                    <input id="submit" type="submit" value="Enviar">
+                    <input id="submit" type="submit" value="UPLOAD" class="my-4 btn btn-warning btn-lg shadow">
                 </form>
                 <div id="subtitulo"></div>
                 <div id="n_imagenes"></div>
                 <div id="info-espacio"></div>
             </div>
+        </section>
+        <section id="stats">
+            <div class="col-12 col-md-6 col-lg-4 d-block mx-auto">
+                <table class="table table-striped">
+                    <thead>
+                      <tr></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row" class="fw-bold">Total Images</th>
+                        <td><small id="total-images">Sample</small></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="fw-bold">Memory Used</th>
+                        <td><small id="memory-used">Sample</small></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="fw-bold">Memory Available</th>
+                        <td><small id="memory-available">Sample</small></td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="fw-bold">Total Memory</th>
+                        <td><small id="total-memory">Sample</small></td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+            <img src="" alt="" id="img">
         </section>
     </main>
 

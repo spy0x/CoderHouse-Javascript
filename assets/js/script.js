@@ -12,11 +12,25 @@ const cantidadInput = document.getElementById('cantidad');
 const inputFiles = document.getElementById('inputfiles');
 const form = document.getElementById('formulario');
 const infoEspacio = document.getElementById('info-espacio');
+const usedMemory = document.getElementById('memory-used')
+const totalMemory = document.getElementById('total-memory');
+const availableMemory = document.getElementById('memory-available');
+const totalImages = document.getElementById('total-images');
 
 // Variables Globales
 const espacioMaximo = 100 // el usuario puede subir maximo hasta 100mb a la plataforma.
 const maxFiles = 10; //El usuario puede ingresar maximo 10 imagenes
-let imagenes = [];
+let imagenes = localStorage.getItem('images');
+let usedSpace = 0; 
+
+const reader = new FileReader();
+const preview = document.querySelector('#img');
+preview.src = localStorage.getItem('imagenPrueba');
+
+// MAIN
+imagenes = imagenes == null ? [] : JSON.parse(imagenes);
+updateStats();
+
 
 // Eventos
 cantidadInput.oninput = () => {
@@ -25,25 +39,31 @@ cantidadInput.oninput = () => {
     inputFiles.innerHTML = ''; //Hace un clear a la cantidad de elementos previos
     for (i = 0; i < veces; i++) {
         const fileUpload = document.createElement('div');
-        fileUpload.innerHTML = `<label for="img">Selecciona una imagen:</label>
-        <input class="uploadinput" type="file" id="img" name="img" accept="image/*">`
+        fileUpload.innerHTML = `<input class="uploadinput d-block mx-auto my-2" type="file" name="img" accept="image/*" value=Select>`
         inputFiles.append(fileUpload);
     }
 }
 form.onsubmit = (e) => {
     e.preventDefault();
-    imagenes = [];
     const uploads = document.getElementsByClassName('uploadinput');
     const userUploads = Array.from(uploads).filter(element => element.files.length > 0) // filtra los file inputs solo los que el usuario les cargó efectivamente una imagen.
     createImages(userUploads);
-    mostrarResumen();
+    updateStats();
+    // mostrarResumen();
+}
+reader.onload = () => {
+    preview.src = reader.result;
+    localStorage.setItem('imagenPrueba', reader.result);
 }
 // Funciones
-function createImages(uploadList){
-    for (upload of uploadList){
+function createImages(uploadList) {
+    for (upload of uploadList) {
         const nombre = upload.files[0].name;
-        const tamanio = upload.files[0].size / 1048576; //el tamaño se convierte de bytes a MB y redondea a 1 decimal.
+        const tamanio = upload.files[0].size / 1048576; //el tamaño se convierte de bytes a MB.
         const imagen = new Imagen(nombre, tamanio);
+        // const test = URL.createObjectURL(upload.files[0]);
+        // console.log(test);
+        reader.readAsDataURL(upload.files[0]);
         imagenes.push(imagen);
     }
 }
@@ -70,13 +90,27 @@ function mostrarResumen() {
         nImagenes.innerText = `No ingresaste ninguna imagen`;
     }
     const tamanio = imagenes.reduce((acumulador, imagen) => acumulador + imagen.tamanio, 0);
+    
     const espacioUsado = document.createElement("h5");
     espacioUsado.innerText = `Has utilizado ${tamanio.toFixed(2)} MB de los ${espacioMaximo} MB disponibles.
     ${(100 - (tamanio / espacioMaximo * 100)).toFixed(2)}% restante disponible.`
     infoEspacio.append(espacioUsado);
 }
-function clearInfo(){
+function clearInfo() {
     subtitle.innerHTML = '';
     nImagenes.innerHTML = '';
     infoEspacio.innerHTML = '';
+}
+function updateStats(){
+    if (imagenes.length > 0){
+        usedSpace = imagenes.reduce((acumulador, imagen) => acumulador + imagen.tamanio, 0);
+    }
+    else {
+        usedSpace = 0;
+    }
+    usedMemory.innerText = `${usedSpace.toFixed(2)}MB`;
+    availableMemory.innerText = `${(espacioMaximo - usedSpace).toFixed(2)}MB`;
+    totalImages.innerText = imagenes.length;
+    totalMemory.innerText = `${espacioMaximo}MB`;
+    localStorage.setItem('images', JSON.stringify(imagenes));
 }
