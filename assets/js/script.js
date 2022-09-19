@@ -7,12 +7,11 @@ class Image {
     }
 }
 // DOM HTML OBJECTS
-const summaryTitle = document.getElementById("summaryTitle");
-const imagesSummary = document.getElementById("n_imagenes");
+const summaryTitle = document.getElementById("summary-title");
+const imagesSummary = document.getElementById("images-summary");
 const imagesAmount = document.getElementById('cantidad');
 const inputFiles = document.getElementById('inputfiles');
 const form = document.getElementById('formulario');
-const spaceInfo = document.getElementById('info-espacio');
 const usedMemory = document.getElementById('memory-used')
 const totalMemory = document.getElementById('total-memory');
 const availableMemory = document.getElementById('memory-available');
@@ -34,7 +33,7 @@ updateStats();
 imagesAmount.oninput = () => {
     imagesAmount.value = Math.max(0, Math.min(imagesAmount.value, maxFiles)); //CLAMPS VALUE TO MIN=0 AND MAX=10
     const veces = parseInt(imagesAmount.value);
-    inputFiles.innerHTML = ''; //CLEARS PREVIOUS HTML SUMMARY ELEMENTS IF ANY.
+    inputFiles.innerHTML = ''; //CLEARS PREVIOUS FILE INPUT ELEMENTS IF ANY.
     for (i = 0; i < veces; i++) {
         const fileUpload = document.createElement('div');
         fileUpload.innerHTML = `<input class="uploadinput d-block mx-auto my-2" type="file" name="img" accept="image/*" value=Select>`
@@ -48,6 +47,7 @@ form.onsubmit = (e) => {
     createImages(userUploads);
     updateStats();
     showSummary(userUploads);
+    clearFileInputs(userUploads);
 }
 // FUNCTIONS
 function createImages(uploadList) {
@@ -64,13 +64,12 @@ function createImages(uploadList) {
 
 // DOM FUNCTIONS
 function showSummary(userUploads) {
-    clearInfo();
+    clearSummary();
     if (userUploads.length > 0) {
         const title = document.createElement("h2");
         title.innerText = "SUMMARY";
+        title.classList.add("fw-bold");
         summaryTitle.append(title);
-        imagesSummary.innerHTML = `<h4>Number of images:</h4>
-            <p>${userUploads.length}</p>`;
         const subtitle = document.createElement("h4");
         subtitle.innerText = "Successfully uploaded images:"
         imagesSummary.append(subtitle)
@@ -80,19 +79,20 @@ function showSummary(userUploads) {
             imageName.innerText = `${file.name} - ${toMB(file.size).toFixed(2)}MB`;
             imagesSummary.append(imageName);
         }
+        imagesSummary.innerHTML += `<p><span class="fw-bold">Uploaded Images:</span> ${userUploads.length}</p>`;
         const totalSize = toMB(userUploads.reduce((accumulator, images) => accumulator + images.files[0].size, 0)); //CONVERTS TOTAL USER UPLOADED IMAGES BYTES TO MB. 
-        const uploadsSizeSummary = document.createElement("h5");
-        uploadsSizeSummary.innerText = `You've just spent ${totalSize.toFixed(2)} MB of ${maxSpace} MB total space.
-        ${(100 - (totalSize / maxSpace * 100)).toFixed(2)}% free space available.`
-        spaceInfo.append(uploadsSizeSummary);
+        const uploadsSizeSummary = document.createElement("p");
+        uploadsSizeSummary.innerHTML = `<span class="fw-bold">Used Memory:</span> ${totalSize.toFixed(2)}MB <small>(${(100 - (usedSpace / maxSpace * 100)).toFixed(2)}% free space)</small>`
+        imagesSummary.append(uploadsSizeSummary);
+        imagesSummary.className = "text-center mb-3 p-3";
     } else {
         imagesSummary.innerText = `You haven't chosen any images yet.`;
+        imagesSummary.className = "text-center mb-3 p-3 text-danger";
     }
 }
-function clearInfo() {
+function clearSummary() {
     summaryTitle.innerHTML = '';
     imagesSummary.innerHTML = '';
-    spaceInfo.innerHTML = '';
 }
 function updateStats() {
     if (userImages.length > 0) {
@@ -106,6 +106,11 @@ function updateStats() {
     totalImages.innerText = userImages.length;
     totalMemory.innerText = `${maxSpace}MB`;
     localStorage.setItem('images', JSON.stringify(userImages));
+}
+function clearFileInputs(uploadList) {
+    uploadList.forEach(element => {
+        element.value = "";
+    });
 }
 // TOOL FUNCTIONS
 function toMB(bytes) {
