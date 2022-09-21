@@ -20,12 +20,11 @@ const totalImages = document.getElementById('total-images');
 // GLOBAL VARIABLES
 const maxSpace = 100 // USER MAX UPLOAD TO PLATFORM
 const maxFiles = 10; // MAX UPLOAD FILE INPUTS AT A TIME
-let userImages = localStorage.getItem('images');
-let usedSpace = 0;
+let userImages = JSON.parse(localStorage.getItem('images')) || []; //Loads images from localStorage. If null, then returns empty array.
+let usedSpace;
 
 
 // MAIN
-userImages = userImages == null ? [] : JSON.parse(userImages);
 updateStats();
 
 
@@ -43,7 +42,7 @@ imagesAmount.oninput = () => {
 form.onsubmit = (e) => {
     e.preventDefault();
     const uploads = document.getElementsByClassName('uploadinput');
-    const userUploads = Array.from(uploads).filter(element => element.files.length > 0) // REMOVES EMPTY UPLOAD INPUT FILES.
+    const userUploads = Array.from(uploads).filter(element => element.files.length > 0) // CONVERTS HTML COLLECTION TO ARRAY AND REMOVES EMPTY UPLOAD INPUT FILES.
     createImages(userUploads);
     updateStats();
     showSummary(userUploads);
@@ -52,12 +51,10 @@ form.onsubmit = (e) => {
 // FUNCTIONS
 function createImages(uploadList) {
     for (upload of uploadList) {
-        const file = upload.files[0];
-        const name = file.name;
-        const size = toMB(file.size); // SIZE CONVERTED TO MB.
+        const {name, size} = upload.files[0];
         const reader = new FileReader(); // JS OBJECT FOR STORAGE USER FILE AT BUFFER.
-        reader.readAsDataURL(file);
-        const image = new Image(name, size, reader.result);
+        reader.readAsDataURL(upload.files[0]);
+        const image = new Image(name, toMB(size), reader.result);
         userImages.push(image);
     }
 }
@@ -95,12 +92,7 @@ function clearSummary() {
     imagesSummary.innerHTML = '';
 }
 function updateStats() {
-    if (userImages.length > 0) {
-        usedSpace = userImages.reduce((accumulator, images) => accumulator + images.size, 0);
-    }
-    else {
-        usedSpace = 0;
-    }
+    usedSpace = userImages.length > 0 ? userImages.reduce((accumulator, images) => accumulator + images.size, 0) : 0;
     usedMemory.innerText = `${usedSpace.toFixed(2)}MB`;
     availableMemory.innerText = `${(maxSpace - usedSpace).toFixed(2)}MB`;
     totalImages.innerText = userImages.length;
