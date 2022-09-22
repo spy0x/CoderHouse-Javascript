@@ -27,7 +27,12 @@ let usedSpace = 0;
 // MAIN
 userImages = userImages == null ? [] : JSON.parse(userImages);
 updateStats();
-
+Swal.fire({
+    title: 'Error!',
+    text: 'Do you want to continue',
+    icon: 'error',
+    confirmButtonText: 'Cool'
+  })
 
 // EVENTS
 imagesAmount.oninput = () => {
