@@ -20,13 +20,10 @@ const totalImages = document.getElementById('total-images');
 // GLOBAL VARIABLES
 const maxSpace = 100 // USER MAX UPLOAD TO PLATFORM
 const maxFiles = 10; // MAX UPLOAD FILE INPUTS AT A TIME
-let userImages = JSON.parse(localStorage.getItem('images')) || []; //Loads images from localStorage. If null, then returns empty array.
+const userImages = JSON.parse(localStorage.getItem('images')) || []; //Loads images from localStorage. If null, then returns empty array.
 let usedSpace;
-
-
 // MAIN
 updateStats();
-
 
 // EVENTS
 imagesAmount.oninput = () => {
@@ -37,6 +34,7 @@ imagesAmount.oninput = () => {
         const fileUpload = document.createElement('div');
         fileUpload.innerHTML = `<input class="uploadinput d-block mx-auto my-2" type="file" name="img" accept="image/*" value=Select>`
         inputFiles.append(fileUpload);
+        createInputEvent(fileUpload);
     }
 }
 form.onsubmit = (e) => {
@@ -48,17 +46,41 @@ form.onsubmit = (e) => {
     showSummary(userUploads);
     clearFileInputs(userUploads);
 }
+function createInputEvent(fileUpload) {
+    fileUpload.children[0].onchange = ({ target }) => {
+        const imageName = target.files[0].name;
+        const isAlreadyInInputs = Array.from(document.getElementsByClassName('uploadinput')).filter(element => element.files.length > 0 && element.files[0].name == imageName).length > 1;
+        if (isAlreadyInInputs) {
+            target.value = '';
+            Swal.fire({
+                title: 'Error',
+                icon: 'error',
+                text: "You have already selected this image.",
+            });
+        } else {
+            const isAlreadyInGallery = userImages.some(element => element.name == imageName);
+            if (isAlreadyInGallery) {
+                target.value = '';
+                Swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: "This image already exists in the gallery.",
+                });
+            }
+        }
+        clearSummary();
+    };
+}
 // FUNCTIONS
 function createImages(uploadList) {
     for (upload of uploadList) {
-        const {name, size} = upload.files[0];
+        const { name, size } = upload.files[0];
         const reader = new FileReader(); // JS OBJECT FOR STORAGE USER FILE AT BUFFER.
         reader.readAsDataURL(upload.files[0]);
         const image = new Image(name, toMB(size), reader.result);
         userImages.push(image);
     }
 }
-
 // DOM FUNCTIONS
 function showSummary(userUploads) {
     clearSummary();
@@ -104,7 +126,7 @@ function clearFileInputs(uploadList) {
         element.value = "";
     });
 }
-// TOOL FUNCTIONS
+// TOOL AND VALIDATION FUNCTIONS
 function toMB(bytes) {
     return bytes / 1048576;
 }
