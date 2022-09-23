@@ -17,17 +17,19 @@ const availableMemory = document.getElementById('memory-available');
 const totalImages = document.getElementById('total-images');
 
 // GLOBAL VARIABLES
-const maxSpace = 100 // USER MAX UPLOAD TO PLATFORM
+const maxSpace = 10; // USER MAX UPLOAD TO PLATFORM
 const maxFiles = 10; // MAX UPLOAD FILE INPUTS AT A TIME
-const canUploadAgain = false; // FOR DEFAULT USERS CAN'T UPLOAD AN IMAGE ALREADY IN THE GALLERY WITH THE SAME NAME.
-const userImages = JSON.parse(localStorage.getItem('images')) || []; //Loads images from localStorage. If null, then returns empty array.
-let usedSpace;
+const canUploadAgain = false; // DEFAULT=FALSE. USERS CAN'T UPLOAD AN IMAGE ALREADY IN THE GALLERY WITH THE SAME NAME.
+const userImages = JSON.parse(localStorage.getItem('images')) || []; //LOADS IMAGES FROM LOCALSTORAGE. IF NULL, THEN RETURNS EMPTY ARRAY.
+let usedSpace; //USER USED SPACE IN MEGABYTES.
+
 
 // SWEET ALERT FUNCTIONS
 const alertError = (message) => Swal.fire({
-    title: 'Error',
+    title: 'ERROR',
     icon: 'error',
     text: message,
+    confirmButtonColor: '#0f1620',
 });
 
 // MAIN
@@ -50,12 +52,11 @@ form.onsubmit = (e) => {
     e.preventDefault();
     const uploads = document.getElementsByClassName('uploadinput');
     const userUploads = Array.from(uploads).filter(element => element.files.length > 0) // CONVERTS HTML COLLECTION TO ARRAY AND REMOVES EMPTY UPLOAD INPUT FILES.
-    createImages(userUploads);
-    updateStats();
-    const isEmptyUploads = userUploads.length == 0;
-    if (isEmptyUploads) {
+    if (userUploads.length == 0) {
         imagesSummary.innerText = `You haven't chosen any images yet.`;
     } else {
+        createImages(userUploads);
+        updateStats();
         showSummary(userUploads);
         clearFileInputs(userUploads);
     }
@@ -63,20 +64,24 @@ form.onsubmit = (e) => {
 function createInputEvent(fileInput) {
     fileInput.children[0].onchange = ({ target }) => {
         const imageName = target.files[0].name;
-        const isAlreadyInInputs = Array.from(document.getElementsByClassName('uploadinput')).filter(element => element.files.length > 0 && element.files[0].name == imageName).length > 1;
+        const usedFileInputs = Array.from(document.getElementsByClassName('uploadinput')).filter(element => element.files.length > 0); //GET ONLY USED FILE INPUTS. REMOVE EMPTY ONES.
+        const isAlreadyInInputs = usedFileInputs.filter(element => element.files[0].name == imageName).length > 1; //COUNTS HOW MANY ITEMS EXISTS WITH THE SAME NAME IN THE FILE INPUTS. MORE THAN 1 RETURNS TRUE.
+        const isAlreadyInGallery = userImages.some(element => element.name == imageName); //RETURNS TRUE IF THE SAME NAME EXISTS ALREADY IN LOCALSTORAGE IMAGE LIST.
+        const totalSizeInInputs = toMB(usedFileInputs.reduce((accumulator, image) => accumulator + image.files[0].size, 0)); //GETS THE TOTAL FILESIZE IN FILE INPUTS IN MEGABYTES.
         if (isAlreadyInInputs) {
             target.value = '';
             alertError("You have already selected this image.");
-        } else if (!canUploadAgain) {
-            const isAlreadyInGallery = userImages.some(element => element.name == imageName);
-            if (isAlreadyInGallery) {
-                target.value = '';
-                alertError("This image already exists in the gallery.");
-            }
+        } else if (!canUploadAgain && isAlreadyInGallery) {
+            target.value = '';
+            alertError("This image already exists in the gallery.");
+        } else if (totalSizeInInputs + usedSpace > maxSpace) {
+            target.value = '';
+            alertError("This image exceeds your maximum storage space in the gallery.");
         }
         clearSummary();
     };
 }
+
 // FUNCTIONS
 function createImages(uploadList) {
     for (upload of uploadList) {
@@ -87,6 +92,10 @@ function createImages(uploadList) {
         userImages.push(image);
     }
 }
+function toMB(bytes) {
+    return bytes / 1048576;
+}
+
 // DOM FUNCTIONS
 function showSummary(userUploads) {
     const totalSize = toMB(userUploads.reduce((accumulator, images) => accumulator + images.files[0].size, 0)); //CONVERTS TOTAL USER UPLOADED IMAGES BYTES TO MB. 
@@ -104,6 +113,7 @@ function showSummary(userUploads) {
         <span class="fw-bold">Used Memory:</span> ${totalSize.toFixed(2)}MB <small>(${(100 - (usedSpace / maxSpace * 100)).toFixed(2)}% free space)</small>`,
         showCloseButton: true,
         confirmButtonText: "Close",
+        confirmButtonColor: '#0f1620',
     })
     clearSummary();
 }
@@ -122,8 +132,4 @@ function clearFileInputs(uploadList) {
     uploadList.forEach(element => {
         element.value = "";
     });
-}
-// TOOL FUNCTIONS
-function toMB(bytes) {
-    return bytes / 1048576;
 }
