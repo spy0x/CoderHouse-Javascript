@@ -7,7 +7,6 @@ class Image {
     }
 }
 // DOM HTML OBJECTS
-const summaryTitle = document.getElementById("summary-title");
 const imagesSummary = document.getElementById("images-summary");
 const imagesAmount = document.getElementById('cantidad');
 const inputFiles = document.getElementById('inputfiles');
@@ -20,21 +19,31 @@ const totalImages = document.getElementById('total-images');
 // GLOBAL VARIABLES
 const maxSpace = 100 // USER MAX UPLOAD TO PLATFORM
 const maxFiles = 10; // MAX UPLOAD FILE INPUTS AT A TIME
+const canUploadAgain = false; // FOR DEFAULT USERS CAN'T UPLOAD AN IMAGE ALREADY IN THE GALLERY WITH THE SAME NAME.
 const userImages = JSON.parse(localStorage.getItem('images')) || []; //Loads images from localStorage. If null, then returns empty array.
 let usedSpace;
+
+// SWEET ALERT FUNCTIONS
+const alertError = (message) => Swal.fire({
+    title: 'Error',
+    icon: 'error',
+    text: message,
+});
+
 // MAIN
 updateStats();
 
 // EVENTS
 imagesAmount.oninput = () => {
+    clearSummary();
     imagesAmount.value = Math.max(0, Math.min(imagesAmount.value, maxFiles)); //CLAMPS VALUE TO MIN=0 AND MAX=10
     const veces = parseInt(imagesAmount.value);
     inputFiles.innerHTML = ''; //CLEARS PREVIOUS FILE INPUT ELEMENTS IF ANY.
     for (i = 0; i < veces; i++) {
-        const fileUpload = document.createElement('div');
-        fileUpload.innerHTML = `<input class="uploadinput d-block mx-auto my-2" type="file" name="img" accept="image/*" value=Select>`
-        inputFiles.append(fileUpload);
-        createInputEvent(fileUpload);
+        const fileInput = document.createElement('div');
+        fileInput.innerHTML = `<input class="uploadinput d-block mx-auto my-2" type="file" name="img" accept="image/*" value=Select>`
+        inputFiles.append(fileInput);
+        createInputEvent(fileInput);
     }
 }
 form.onsubmit = (e) => {
@@ -43,29 +52,26 @@ form.onsubmit = (e) => {
     const userUploads = Array.from(uploads).filter(element => element.files.length > 0) // CONVERTS HTML COLLECTION TO ARRAY AND REMOVES EMPTY UPLOAD INPUT FILES.
     createImages(userUploads);
     updateStats();
-    showSummary(userUploads);
-    clearFileInputs(userUploads);
+    const isEmptyUploads = userUploads.length == 0;
+    if (isEmptyUploads) {
+        imagesSummary.innerText = `You haven't chosen any images yet.`;
+    } else {
+        showSummary(userUploads);
+        clearFileInputs(userUploads);
+    }
 }
-function createInputEvent(fileUpload) {
-    fileUpload.children[0].onchange = ({ target }) => {
+function createInputEvent(fileInput) {
+    fileInput.children[0].onchange = ({ target }) => {
         const imageName = target.files[0].name;
         const isAlreadyInInputs = Array.from(document.getElementsByClassName('uploadinput')).filter(element => element.files.length > 0 && element.files[0].name == imageName).length > 1;
         if (isAlreadyInInputs) {
             target.value = '';
-            Swal.fire({
-                title: 'Error',
-                icon: 'error',
-                text: "You have already selected this image.",
-            });
-        } else {
+            alertError("You have already selected this image.");
+        } else if (!canUploadAgain) {
             const isAlreadyInGallery = userImages.some(element => element.name == imageName);
             if (isAlreadyInGallery) {
                 target.value = '';
-                Swal.fire({
-                    title: 'Error',
-                    icon: 'error',
-                    text: "This image already exists in the gallery.",
-                });
+                alertError("This image already exists in the gallery.");
             }
         }
         clearSummary();
@@ -83,35 +89,23 @@ function createImages(uploadList) {
 }
 // DOM FUNCTIONS
 function showSummary(userUploads) {
-    clearSummary();
-    if (userUploads.length > 0) {
-        const title = document.createElement("h2");
-        title.innerText = "SUMMARY";
-        title.classList.add("fw-bold");
-        summaryTitle.append(title);
-        const subtitle = document.createElement("h4");
-        subtitle.innerText = "Successfully uploaded images:"
-        imagesSummary.append(subtitle)
-        for (image of userUploads) {
-            const file = image.files[0];
-            const imageName = document.createElement("p");
-            imageName.innerText = `${file.name} - ${toMB(file.size).toFixed(2)}MB`;
-            imagesSummary.append(imageName);
-        }
-        imagesSummary.innerHTML += `<p><span class="fw-bold">Uploaded Images:</span> ${userUploads.length}</p>`;
-        const totalSize = toMB(userUploads.reduce((accumulator, images) => accumulator + images.files[0].size, 0)); //CONVERTS TOTAL USER UPLOADED IMAGES BYTES TO MB. 
-        const uploadsSizeSummary = document.createElement("p");
-        uploadsSizeSummary.innerHTML = `<span class="fw-bold">Used Memory:</span> ${totalSize.toFixed(2)}MB <small>(${(100 - (usedSpace / maxSpace * 100)).toFixed(2)}% free space)</small>`
-        imagesSummary.append(uploadsSizeSummary);
-        imagesSummary.className = "text-center mb-3 p-3";
-    } else {
-        imagesSummary.innerText = `You haven't chosen any images yet.`;
-        imagesSummary.className = "text-center mb-3 p-3 text-danger";
+    const totalSize = toMB(userUploads.reduce((accumulator, images) => accumulator + images.files[0].size, 0)); //CONVERTS TOTAL USER UPLOADED IMAGES BYTES TO MB. 
+    let imagesName = "";
+    for (image of userUploads) {
+        const file = image.files[0];
+        imagesName += `<p><small>${file.name} - ${toMB(file.size).toFixed(2)}MB</small></p>`;
     }
-}
-function clearSummary() {
-    summaryTitle.innerHTML = '';
-    imagesSummary.innerHTML = '';
+    Swal.fire({
+        title: "SUMMARY",
+        icon: 'success',
+        html: `<h4 class="mb-2">Succesfully uploaded images:</h4>
+        ${imagesName}
+        <p class="mt-3"><span class="fw-bold">Uploaded Images:</span> ${userUploads.length}</p>
+        <span class="fw-bold">Used Memory:</span> ${totalSize.toFixed(2)}MB <small>(${(100 - (usedSpace / maxSpace * 100)).toFixed(2)}% free space)</small>`,
+        showCloseButton: true,
+        confirmButtonText: "Close",
+    })
+    clearSummary();
 }
 function updateStats() {
     usedSpace = userImages.length > 0 ? userImages.reduce((accumulator, images) => accumulator + images.size, 0) : 0;
@@ -121,12 +115,15 @@ function updateStats() {
     totalMemory.innerText = `${maxSpace}MB`;
     localStorage.setItem('images', JSON.stringify(userImages));
 }
+function clearSummary() {
+    imagesSummary.innerHTML = '';
+}
 function clearFileInputs(uploadList) {
     uploadList.forEach(element => {
         element.value = "";
     });
 }
-// TOOL AND VALIDATION FUNCTIONS
+// TOOL FUNCTIONS
 function toMB(bytes) {
     return bytes / 1048576;
 }
