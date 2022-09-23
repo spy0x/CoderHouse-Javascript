@@ -26,12 +26,7 @@ let usedSpace;
 
 // MAIN
 updateStats();
-Swal.fire({
-    title: 'Error!',
-    text: 'Do you want to continue',
-    icon: 'error',
-    confirmButtonText: 'Cool'
-  })
+
 
 // EVENTS
 imagesAmount.oninput = () => {
