@@ -20,6 +20,8 @@ async function setNasaPicture()
     const mediaType = result.media_type;
     const url = result.url;
     // const title = result.title;
-    nasaImage.src = url;
-    nasaImage.type = mediaType;
+    nasaImage.setAttribute('src', url);
+    nasaImage.setAttribute('type', mediaType);
+    // nasaImage.src = url;
+    // nasaImage.type = mediaType;
 }
