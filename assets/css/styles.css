@@ -84,6 +84,9 @@ nav {
 	font-weight: 900;
 	text-shadow: 3px 3px 3px rgba(0,0,0,0.35);
 }
+#nasa_picture {
+	height: 50vh;
+}
 /* MEDIAQUERIES */
 @media screen and (max-height: 480px) {
 	.nav__title {
