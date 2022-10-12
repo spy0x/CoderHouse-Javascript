@@ -83,8 +83,8 @@ function createInputEvent(fileInput) {
 async function createImages(uploadList) {
   for (upload of uploadList) {
     const { name, size } = upload.files[0];
-    const test = await getBase64(upload.files[0]);
-    const image = new Image(name, toMB(size), test);
+    const dataURL = await getDataURL(upload.files[0]);
+    const image = new Image(name, toMB(size), dataURL);
     userImages.push(image);
     updateStats();
     showSummary(uploadList);
@@ -133,7 +133,7 @@ function clearFileInputs(uploadList) {
     element.value = '';
   });
 }
-function getBase64(file) {
+function getDataURL(file) {
   const reader = new FileReader();
   return new Promise((resolve) => {
     reader.onload = (e) => {
