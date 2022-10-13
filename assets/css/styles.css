@@ -1,95 +1,106 @@
 /* Reset CSS */
 body * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	color: #000000;
-	font-family: 'Roboto', sans-serif;
-	font-weight: 400;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: #000000;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
 }
 
 nav {
-	background-color: #1f2e43;
-	background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
-	opacity: 0.90;
+  background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
+  opacity: 0.9;
 }
 
 .nav__title {
-	font-weight: 900;
-	font-size: 2rem;
-	color: whitesmoke;
-	font-weight: 400;
-	text-shadow: 3px 3px 3px rgba(0,0,0,0.85);
+  font-weight: 900;
+  font-size: 2rem;
+  color: whitesmoke;
+  font-weight: 400;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.85);
 }
 
 .nav__title:hover {
-	color: whitesmoke;
+  color: whitesmoke;
 }
 .nav__title:focus {
-	color: whitesmoke;
+  color: whitesmoke;
 }
 .nav__togglebutton {
-	color: whitesmoke;
+  color: whitesmoke;
 }
 
 .nav__li {
-	color: whitesmoke;
-	text-decoration: none;
-	margin-right: 1rem;
-	font-size: 1rem;
-	font-weight: 400;
+  color: whitesmoke;
+  text-decoration: none;
+  margin-right: 1rem;
+  font-size: 1rem;
+  font-weight: 400;
 }
 .nav__li:hover {
-	color: rgb(255, 215, 40);
-	font-weight: 400;
-	font-size: 1.2rem;
+  color: rgb(255, 215, 40);
+  font-weight: 400;
+  font-size: 1.2rem;
 }
 
 .header__leftbox {
-	background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
-	color: whitesmoke;
+  background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
+  color: whitesmoke;
 }
 
 .header__title {
-	text-shadow: 3px 3px 3px rgba(0,0,0,0.85);
-	font-weight: 900;
-	font-size: 3rem;
-	color: whitesmoke;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.85);
+  font-weight: 900;
+  font-size: 3rem;
+  color: whitesmoke;
 }
 
 .header__rightbox {
-	background-image: url("../img/gallery.jpg");
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: right;
+  background-image: url('../img/gallery.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: right;
 }
 .header__rightbox div {
-	background-color: rgba(0,0,0,0.72875087535014);
+  background-color: rgba(0, 0, 0, 0.72875087535014);
 }
 .main__section__container {
-	box-shadow: 6px 7px 8px 1px rgba(0,0,0,0.75);
-	background: linear-gradient(0deg, rgba(221,221,221,1) 0%, rgba(248,251,255,1) 100%);
+  box-shadow: 6px 7px 8px 1px rgba(0, 0, 0, 0.75);
+  background: linear-gradient(0deg, rgba(221, 221, 221, 1) 0%, rgba(248, 251, 255, 1) 100%);
 }
 .main__section__container h1 {
-	background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
-	color: whitesmoke;
-	font-size: 2rem;
-	font-weight: 900;
+  background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
+  color: whitesmoke;
+  font-size: 2rem;
+  font-weight: 900;
 }
 .main__section__container img {
-	width: 50%;
-	max-width: 200px;
+  width: 50%;
+  max-width: 200px;
 }
 #stats h2 {
-	font-weight: 900;
-	text-shadow: 3px 3px 3px rgba(0,0,0,0.35);
+  font-weight: 900;
+  text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.35);
+}
+.card__img {
+  height: 50vh;
+  object-fit: cover;
+  object-position: center;
+}
+.card__img:hover, .card__img:focus {
+	object-fit: contain;
+  }
+.footer__gallery {
+	opacity: 0.9;
+	background: linear-gradient(0deg, rgba(15, 22, 32, 1) 0%, rgba(22, 32, 48, 1) 50%, rgba(29, 43, 65, 1) 100%);
 }
 /* MEDIAQUERIES */
 @media screen and (max-height: 480px) {
-	.nav__title {
-		font-size: 1.5rem;
-	}
-	.header__title {
-		font-size: 2rem;
-	}
+  .nav__title {
+    font-size: 1.5rem;
   }
+  .header__title {
+    font-size: 2rem;
+  }
+}
