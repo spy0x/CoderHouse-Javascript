@@ -1,9 +1,12 @@
+// ALIAS
+const DateTime = luxon.DateTime;
 // OBJECTS
 class Image {
-  constructor(name, size, dataUrl) {
+  constructor(name, size, dataUrl, dateTime) {
     this.name = name;
     this.size = size;
     this.dataUrl = dataUrl;
+    this.dt = dateTime;
   }
 }
 // DOM HTML OBJECTS
@@ -84,7 +87,8 @@ async function createImages(uploadList) {
   for (upload of uploadList) {
     const { name, size } = upload.files[0];
     const dataURL = await getDataURL(upload.files[0]);
-    const image = new Image(name, toMB(size), dataURL);
+    const dt = DateTime.now();
+    const image = new Image(name, toMB(size), dataURL, dt);
     userImages.push(image);
     updateStats();
     showSummary(uploadList);

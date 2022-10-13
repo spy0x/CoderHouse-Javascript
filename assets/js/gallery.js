@@ -1,7 +1,11 @@
+// ALIAS
+const DateTime = luxon.DateTime;
 // DOM VARIABLES
 const navBar = document.getElementById('navbar');
+const header = document.getElementsByTagName('header');
 const gallerySection = document.getElementById('gallery');
 const btnRemove = document.getElementById('btn__remove');
+const selectOrder = document.getElementById('select_order');
 
 // GLOBAL VARIABLES
 const userImages = JSON.parse(localStorage.getItem('images')) || []; //LOADS IMAGES FROM LOCALSTORAGE. IF NULL, THEN RETURNS EMPTY ARRAY.
@@ -14,24 +18,28 @@ const cards = document.getElementsByClassName('card');
 for (element of cards) {
   pictureClickEvent(element);
 }
+
 // EVENTS
-onresize = () => (gallerySection.style.marginTop = `${navBar.offsetHeight}px`);
-onload = () => (gallerySection.style.marginTop = `${navBar.offsetHeight}px`);
+onresize = () => (header[0].style.marginTop = `${navBar.offsetHeight}px`);
+onload = () => (header[0].style.marginTop = `${navBar.offsetHeight}px`);
 btnRemove.onclick = () => {
   removeSelectedImages();
   localStorage.setItem('images', JSON.stringify(userImages));
   showPictures();
 };
-function removeSelectedImages() {
-  for (card of selectedCards) {
-    const selectedImage = userImages.find(({ name }) => name == card.querySelector('#name').innerText);
-    const index = userImages.indexOf(selectedImage);
-    if (index > -1) {
-      userImages.splice(index, 1);
+selectOrder.onchange = () => {
+  switch (selectOrder.value) {
+    case "2":
+      //Newest first
+      userImages.sort((a, b) => DateTime.fromISO(b.dt).toMillis() - DateTime.fromISO(a.dt).toMillis());
+      break;
+    case "3":
+      //Oldest first
+      userImages.sort((a, b) => DateTime.fromISO(a.dt).toMillis() - DateTime.fromISO(b.dt).toMillis());
+      break;
     }
-  }
-}
-
+    showPictures();
+};
 function pictureClickEvent(card) {
   card.onclick = () => {
     if (selectedCards.some((element) => card == element)) {
@@ -42,7 +50,6 @@ function pictureClickEvent(card) {
       card.style.background = 'linear-gradient(0deg, rgba(200, 200, 200, 1) 0%, rgba(248, 251, 255, 1) 100%)';
     }
     btnRemove.style.display = selectedCards.length > 0 ? 'block' : 'none';
-    ;
   };
 }
 
@@ -50,16 +57,28 @@ function pictureClickEvent(card) {
 function showPictures() {
   gallerySection.innerHTML = '';
   for (image of userImages) {
-    const { name, dataUrl } = image;
+    const { name, dataUrl, dt } = image;
+    const date = DateTime.fromISO(dt);
     const imageCard = document.createElement('div');
     imageCard.classList.add('col');
     imageCard.innerHTML = `<div class="card h-100">
             <img src="${dataUrl}" class="card-img-top card__img" alt="...">
             <div class="card-body">
             <h5 class="card-title" id="name">${name}</h5>
-            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            </div>
+            <div class="card-footer text-muted text-end">
+            ${date.toFormat('dd-MM-yyyy, HH:mm')}
             </div>
             </div>`;
     gallerySection.append(imageCard);
+  }
+}
+function removeSelectedImages() {
+  for (card of selectedCards) {
+    const selectedImage = userImages.find(({ name }) => name == card.querySelector('#name').innerText);
+    const index = userImages.indexOf(selectedImage);
+    if (index > -1) {
+      userImages.splice(index, 1);
+    }
   }
 }

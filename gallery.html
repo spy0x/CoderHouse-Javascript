@@ -41,12 +41,21 @@
         </div>
     </nav>
     <header class="container-fluid">
-
+        <div class="row justify-content-end p-4">
+            <div class="col-6 col-md-4">
+                <select id="select_order" class="form-select form-select-sm" aria-label="Order by">
+                    <option selected>ORDER BY</option>
+                    <option value="1">Name</option>
+                    <option value="2">Newest</option>
+                    <option value="3">Oldest</option>
+                </select>
+            </div>
+        </div>
     </header>
     <main class="container-fluid">
         <section class="">
             <div id="gallery" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-2 p-4">
-              </div>
+            </div>
         </section>
     </main>
     <footer class="container-fluid fixed-bottom footer__gallery d-flex justify-content-end align-items-center">
@@ -59,6 +68,8 @@
         crossorigin="anonymous"></script>
     <!-- SWEET ALERT LIBRARY -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- LUXON -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.4/build/global/luxon.min.js"></script>
     <!-- MY JS -->
     <script src="./assets/js/gallery.js"></script>
 
