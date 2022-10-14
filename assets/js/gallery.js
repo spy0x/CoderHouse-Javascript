@@ -34,15 +34,15 @@ btnSelect.onclick = () => {
     for (card of cards) {
       const cardOverlay = card.getElementsByClassName('card__overlay')[0];
       selectedCards.push(card);
-      cardOverlay.classList.remove("d-none");
-      cardOverlay.classList.add("d-block")
+      cardOverlay.classList.remove('d-none');
+      cardOverlay.classList.add('d-block');
     }
   } else {
     btnSelect.innerText = 'Select ALL';
     for (card of cards) {
       const cardOverlay = card.getElementsByClassName('card__overlay')[0];
-      cardOverlay.classList.remove("d-block");
-      cardOverlay.classList.add("d-none")
+      cardOverlay.classList.remove('d-block');
+      cardOverlay.classList.add('d-none');
     }
   }
   setRemoveBtn();
@@ -50,6 +50,7 @@ btnSelect.onclick = () => {
 btnRemove.onclick = () => {
   removeSelectedImages();
   clearSelection();
+  setSelectionBtn();
   showPictures();
   saveUserImages();
 };
@@ -63,17 +64,17 @@ selectOrder.onchange = () => {
 function pictureClickEvent(card) {
   card.onclick = () => {
     const cardOverlay = card.getElementsByClassName('card__overlay')[0];
-    console.log(cardOverlay);
     if (selectedCards.some((element) => card == element)) {
       selectedCards = selectedCards.filter((element) => element != card);
-      cardOverlay.classList.remove("d-block");
-      cardOverlay.classList.add("d-none")
+      cardOverlay.classList.remove('d-block');
+      cardOverlay.classList.add('d-none');
     } else {
       selectedCards.push(card);
-      cardOverlay.classList.remove("d-none");
-      cardOverlay.classList.add("d-block")
+      cardOverlay.classList.remove('d-none');
+      cardOverlay.classList.add('d-block');
     }
     setRemoveBtn();
+    setSelectionBtn();
   };
 }
 
@@ -88,7 +89,7 @@ function showPictures() {
     return;
   }
   for (image of userImages) {
-    const { name, dataUrl, dt } = image;
+    const { name, size, dataUrl, dt } = image;
     const date = DateTime.fromISO(dt);
     const imageCard = document.createElement('div');
     imageCard.classList.add('col');
@@ -97,8 +98,11 @@ function showPictures() {
             <div class="card-body">
             <h5 class="card-title text-center fw-bold" id="name">${name}</h5>
             </div>
-            <div class="card-footer text-muted text-end">
-            ${date.toFormat('dd-MM-yyyy, HH:mm:ss')}
+            <div class="card-footer bg-warning">
+            <div class="d-flex justify-content-between">
+            <small>${size.toFixed(2)}MB</small>
+            <small>${date.toFormat('dd-MM-yyyy, HH:mm:ss')}</small>
+            </div>
             </div>
             <div class="card-img-overlay card__overlay d-none">
             </div>
@@ -146,4 +150,7 @@ function sortUserImages() {
 function setRemoveBtn() {
   btnRemove.style.display = selectedCards.length > 0 ? 'block' : 'none';
   gallerySection.style.marginBottom = `${btnRemove.offsetHeight}px`;
+}
+function setSelectionBtn() {
+  btnSelect.innerText = selectedCards.length > 0 ? 'Deselect ALL' : 'Select ALL';
 }

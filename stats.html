@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARTRepo Gallery</title>
+    <title>ARTRepo - Stats</title>
     <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,40 +41,40 @@
         </div>
     </nav>
     <header class="container-fluid">
-        <div class="row">
-            <div class="d-none d-lg-block col-5 vh-100 p-0 header__leftbox">
-                <div class="d-flex flex-column h-100 justify-content-center align-items-center">
-                    <p class="text-center header__title">Welcome!</p>
-                    <p class="text-center text-white">Ready to upload some images?</p>
-                    <a class="btn btn-warning mt-4 btn-lg shadow" href="#upload" role="button">Upload</a>
-                </div>
-            </div>
-            <div
-                class="col-12 col-lg-7 vh-100 p-0 header__rightbox d-flex flex-column justify-content-center align-items-stretch">
-                <div class="d-lg-none d-flex flex-column h-50 justify-content-center align-items-center">
-                    <p class="text-center header__title">Welcome!</p>
-                    <p class="text-center text-white">Ready to upload some images?</p>
-                    <a class="btn btn-warning mt-4 btn-lg shadow" href="#upload" role="button">Upload</a>
-                </div>
-            </div>
-        </div>
+    
     </header>
-    <main class="container-fluid">
-        <section id="upload" class="p-4">
-            <div
-                class="overflow-hidden rounded main__section__container d-flex flex-column justify-content-center align-items-center">
-                <h1 class="w-100 p-3 text-center">Upload your <span class="text-warning">ART!</span></h1>
-                <img src="./assets/img/Upload-Folder-icon.png" alt="upload icon decoration" class="m-3">
-                <form id="formulario" class="p-2 p-lg-3 text-center">
-                    <label for="cantidad">How many images do you want to upload? <small>(max 10)</small>:</label>
-                    <input type="number" id="cantidad" name="cantidad" min="1" max="10" class="my-2">
-                    <div id="inputfiles"></div>
-                    <input id="submit" type="submit" value="UPLOAD" class="my-4 btn btn-warning btn-lg shadow">
-                </form>
-                <div id="images-summary" class="text-center mb-3 p-3 text-danger"></div>
+    <main class="container-fluid p-4">
+        <section id="stats" class="overflow-hidden rounded main__section__container">
+            <h1 class="w-100 p-3 text-center">Your Stats</h1>
+            <div class="col-12 col-md-6 col-lg-4 d-block mx-auto my-3">
+                <table class="table table-striped">
+                    <thead>
+                        <tr></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row" class="fw-bold">Total Images</th>
+                            <td><small id="total-images"></small></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="fw-bold">Memory Used</th>
+                            <td><small id="memory-used"></small></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="fw-bold">Memory Available</th>
+                            <td><small id="memory-available"></small></td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="fw-bold">Total Memory</th>
+                            <td><small id="total-memory"></small></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
     </main>
+    <footer class="container-fluid">
+    </footer>
 
     <!-- BOOTSTRAP JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
@@ -85,8 +85,7 @@
     <!-- LUXON -->
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.4/build/global/luxon.min.js"></script>
     <!-- MY JS -->
-    <script src="./assets/js/main.js"></script>
-    <script src="./assets/js/design.js"></script>
+    <script src="./assets/js/stats.js"></script>
 
 </body>
 

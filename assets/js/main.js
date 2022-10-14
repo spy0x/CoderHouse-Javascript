@@ -1,5 +1,6 @@
 // ALIAS
 const DateTime = luxon.DateTime;
+
 // OBJECTS
 class Image {
   constructor(name, size, dataUrl, dateTime) {
@@ -14,13 +15,9 @@ const imagesSummary = document.getElementById('images-summary');
 const imagesAmount = document.getElementById('cantidad');
 const inputFiles = document.getElementById('inputfiles');
 const form = document.getElementById('formulario');
-const usedMemory = document.getElementById('memory-used');
-const totalMemory = document.getElementById('total-memory');
-const availableMemory = document.getElementById('memory-available');
-const totalImages = document.getElementById('total-images');
 
 // GLOBAL VARIABLES
-const maxSpace = 10; // USER MAX UPLOAD TO PLATFORM
+const maxSpace = 10; // USER MAX MB UPLOAD TO PLATFORM
 const maxFiles = 10; // MAX UPLOAD FILE INPUTS AT A TIME
 const canUploadAgain = false; // DEFAULT=FALSE. USERS CAN'T UPLOAD AN IMAGE ALREADY IN THE GALLERY WITH THE SAME NAME.
 const userImages = JSON.parse(localStorage.getItem('images')) || []; //LOADS IMAGES FROM LOCALSTORAGE. IF NULL, THEN RETURNS EMPTY ARRAY.
@@ -90,10 +87,10 @@ async function createImages(uploadList) {
     const dt = DateTime.now();
     const image = new Image(name, toMB(size), dataURL, dt);
     userImages.push(image);
-    updateStats();
-    showSummary(uploadList);
-    clearFileInputs(uploadList);
   }
+  updateStats();
+  showSummary(uploadList);
+  clearFileInputs(uploadList);
 }
 function toMB(bytes) {
   return bytes / 1048576;
@@ -118,15 +115,12 @@ function showSummary(userUploads) {
     showCloseButton: true,
     confirmButtonText: 'Close',
     confirmButtonColor: '#0f1620',
+    footer: '<a class="fw-bold link-primary text-decoration-none" href="./gallery.html">GO TO GALLERY</a>'
   });
   clearSummary();
 }
 function updateStats() {
   usedSpace = userImages.length > 0 ? userImages.reduce((accumulator, images) => accumulator + images.size, 0) : 0;
-  usedMemory.innerText = `${usedSpace.toFixed(2)}MB`;
-  availableMemory.innerText = `${(maxSpace - usedSpace).toFixed(2)}MB`;
-  totalImages.innerText = userImages.length;
-  totalMemory.innerText = `${maxSpace}MB`;
   localStorage.setItem('images', JSON.stringify(userImages));
 }
 function clearSummary() {
