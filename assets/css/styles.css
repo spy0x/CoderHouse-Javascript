@@ -86,6 +86,10 @@ nav {
 .card{
   cursor: pointer;
 }
+.card__overlay {
+	opacity: 0.7;
+	background: #ebeb34;
+}
 .card__img {
   height: 50vh;
   object-fit: cover;

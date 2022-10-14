@@ -5,6 +5,7 @@ const navBar = document.getElementById('navbar');
 const header = document.getElementsByTagName('header');
 const gallerySection = document.getElementById('gallery');
 const btnRemove = document.getElementById('btn__remove');
+const btnSelect = document.getElementById('btn__select');
 const selectOrder = document.getElementById('select__order');
 
 // GLOBAL VARIABLES
@@ -25,6 +26,27 @@ onresize = () => {
 onload = () => {
   header[0].style.marginTop = `${navBar.offsetHeight}px`;
 };
+btnSelect.onclick = () => {
+  clearSelection();
+  const cards = document.getElementsByClassName('card');
+  if (btnSelect.innerText == 'Select ALL') {
+    btnSelect.innerText = 'Deselect ALL';
+    for (card of cards) {
+      const cardOverlay = card.getElementsByClassName('card__overlay')[0];
+      selectedCards.push(card);
+      cardOverlay.classList.remove("d-none");
+      cardOverlay.classList.add("d-block")
+    }
+  } else {
+    btnSelect.innerText = 'Select ALL';
+    for (card of cards) {
+      const cardOverlay = card.getElementsByClassName('card__overlay')[0];
+      cardOverlay.classList.remove("d-block");
+      cardOverlay.classList.add("d-none")
+    }
+  }
+  setRemoveBtn();
+};
 btnRemove.onclick = () => {
   removeSelectedImages();
   clearSelection();
@@ -40,15 +62,18 @@ selectOrder.onchange = () => {
 };
 function pictureClickEvent(card) {
   card.onclick = () => {
+    const cardOverlay = card.getElementsByClassName('card__overlay')[0];
+    console.log(cardOverlay);
     if (selectedCards.some((element) => card == element)) {
       selectedCards = selectedCards.filter((element) => element != card);
-      card.style.background = '#FFFFFF';
+      cardOverlay.classList.remove("d-block");
+      cardOverlay.classList.add("d-none")
     } else {
       selectedCards.push(card);
-      card.style.background = 'linear-gradient(0deg, rgba(200, 200, 200, 1) 0%, rgba(248, 251, 255, 1) 100%)';
+      cardOverlay.classList.remove("d-none");
+      cardOverlay.classList.add("d-block")
     }
-    btnRemove.style.display = selectedCards.length > 0 ? 'block' : 'none';
-    gallerySection.style.marginBottom = `${btnRemove.offsetHeight}px`;
+    setRemoveBtn();
   };
 }
 
@@ -57,7 +82,7 @@ function showPictures() {
   gallerySection.innerHTML = '';
   if (userImages.length == 0) {
     const message = document.createElement('div');
-    message.classList.add('text-center', "text-danger", "m-auto", "main__section__container", "p-5");
+    message.classList.add('w-100', 'text-center', 'text-danger', 'main__section__container', 'p-5');
     message.innerText = 'Your gallery is empty.';
     gallerySection.append(message);
     return;
@@ -75,7 +100,10 @@ function showPictures() {
             <div class="card-footer text-muted text-end">
             ${date.toFormat('dd-MM-yyyy, HH:mm:ss')}
             </div>
-            </div>`;
+            <div class="card-img-overlay card__overlay d-none">
+            </div>
+            </div>
+            `;
     gallerySection.append(imageCard);
   }
   const cards = document.getElementsByClassName('card');
@@ -102,6 +130,7 @@ function clearSelection() {
 function sortUserImages() {
   switch (selectOrder.value) {
     case '1':
+      //ORDER BY NAME ASC
       userImages.sort((a, b) => a.name.localeCompare(b.name));
       break;
     case '2':
@@ -113,4 +142,8 @@ function sortUserImages() {
       userImages.sort((a, b) => DateTime.fromISO(a.dt).toMillis() - DateTime.fromISO(b.dt).toMillis());
       break;
   }
+}
+function setRemoveBtn() {
+  btnRemove.style.display = selectedCards.length > 0 ? 'block' : 'none';
+  gallerySection.style.marginBottom = `${btnRemove.offsetHeight}px`;
 }
