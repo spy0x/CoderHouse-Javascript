@@ -17,6 +17,7 @@ const inputFiles = document.getElementById('inputfiles');
 const form = document.getElementById('formulario');
 
 // GLOBAL VARIABLES
+const hasLoadedSampleData = localStorage.getItem('sample_data') || false;
 const maxSpace = 10; // USER MAX MB UPLOAD TO PLATFORM
 const maxFiles = 10; // MAX UPLOAD FILE INPUTS AT A TIME
 const canUploadAgain = false; // DEFAULT=FALSE. USERS CAN'T UPLOAD AN IMAGE ALREADY IN THE GALLERY WITH THE SAME NAME.
@@ -33,6 +34,7 @@ const alertError = (message) =>
   });
 
 // MAIN
+loadSampleData();
 updateStats();
 
 // EVENTS
@@ -80,23 +82,9 @@ function createInputEvent(fileInput) {
 }
 
 // FUNCTIONS
-async function createImages(uploadList) {
-  for (upload of uploadList) {
-    const { name, size } = upload.files[0];
-    const dataURL = await getDataURL(upload.files[0]);
-    const dt = DateTime.now();
-    const image = new Image(name, toMB(size), dataURL, dt);
-    userImages.push(image);
-  }
-  updateStats();
-  showSummary(uploadList);
-  clearFileInputs(uploadList);
-}
 function toMB(bytes) {
   return bytes / 1048576;
 }
-
-// DOM FUNCTIONS
 function showSummary(userUploads) {
   const totalSize = toMB(userUploads.reduce((accumulator, images) => accumulator + images.files[0].size, 0)); //CONVERTS TOTAL USER UPLOADED IMAGES BYTES TO MB.
   let imagesName = '';
@@ -115,7 +103,7 @@ function showSummary(userUploads) {
     showCloseButton: true,
     confirmButtonText: 'Close',
     confirmButtonColor: '#0f1620',
-    footer: '<a class="fw-bold link-primary text-decoration-none" href="./gallery.html">GO TO GALLERY</a>'
+    footer: '<a class="fw-bold link-primary text-decoration-none" href="./gallery.html">GO TO GALLERY</a>',
   });
   clearSummary();
 }
@@ -131,6 +119,8 @@ function clearFileInputs(uploadList) {
     element.value = '';
   });
 }
+
+//PROMISES
 function getDataURL(file) {
   const reader = new FileReader();
   return new Promise((resolve) => {
@@ -139,4 +129,28 @@ function getDataURL(file) {
     };
     reader.readAsDataURL(file);
   });
+}
+
+// AJAX
+async function createImages(uploadList) {
+  for (upload of uploadList) {
+    const { name, size } = upload.files[0];
+    const dataURL = await getDataURL(upload.files[0]);
+    const dt = DateTime.now();
+    const image = new Image(name, toMB(size), dataURL, dt);
+    userImages.push(image);
+  }
+  updateStats();
+  showSummary(uploadList);
+  clearFileInputs(uploadList);
+}
+async function loadSampleData() {
+  if (hasLoadedSampleData) {
+    return;
+  }
+  const fetch_data = await fetch('../sample_data.json');
+  const result = await fetch_data.json();
+  userImages.push(...result);
+  updateStats();
+  localStorage.setItem('sample_data', true);
 }
