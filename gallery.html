@@ -43,12 +43,15 @@
     <header class="container-fluid">
         <div class="row justify-content-end p-4">
             <div class="col-6 col-md-4">
-                <select id="select_order" class="form-select form-select-sm" aria-label="Order by">
-                    <option selected>ORDER BY</option>
+                <select id="select__order" class="form-select form-select-sm" aria-label="Order by">
+                    <option option value="" disabled selected>ORDER BY</option>
                     <option value="1">Name</option>
                     <option value="2">Newest</option>
                     <option value="3">Oldest</option>
                 </select>
+            </div>
+            <div class="col-4 col-md-2 text-center">
+                <button id="" class="btn btn-warning btn-sm shadow" role="button">Select ALL</button>
             </div>
         </div>
     </header>

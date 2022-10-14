@@ -83,6 +83,9 @@ nav {
   font-weight: 900;
   text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.35);
 }
+.card{
+  cursor: pointer;
+}
 .card__img {
   height: 50vh;
   object-fit: cover;
